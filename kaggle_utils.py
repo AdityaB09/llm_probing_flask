@@ -3,11 +3,12 @@ import os
 from pathlib import Path
 from kaggle.api.kaggle_api_extended import KaggleApi
 
-
+# Task -> Kaggle dataset id
 KAGGLE_DATASETS = {
     "sarcasm_kaggle": "rmisra/news-headlines-dataset-for-sarcasm-detection",
     "fake_news": "clmentbisaillon/fake-and-real-news-dataset",
-    "amazon_reviews": "bittlingmayer/amazonreviews",
+    # switched to Fine Food Reviews for Amazon sentiment
+    "amazon_reviews": "snap/amazon-fine-food-reviews",
     "hate_speech": "mrmorj/hate-speech-and-offensive-language-dataset",
 }
 

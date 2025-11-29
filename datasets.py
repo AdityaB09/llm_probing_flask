@@ -8,13 +8,13 @@ import nltk
 
 from kaggle_utils import download_kaggle_dataset
 
-
 TaskData = Tuple[List[str], List[int]]
 
 
+# ---------- Sarcasm ----------
+
 def load_sarcasm_dataset(max_samples: int = 2000) -> TaskData:
     task_dir = download_kaggle_dataset("sarcasm_kaggle")
-    # common file name: "Sarcasm_Headlines_Dataset_v2.json"
     json_files = list(task_dir.glob("*.json"))
     if not json_files:
         raise RuntimeError("Sarcasm dataset JSON file not found in Kaggle folder.")
@@ -26,9 +26,10 @@ def load_sarcasm_dataset(max_samples: int = 2000) -> TaskData:
     return texts, labels
 
 
+# ---------- Fake vs Real News ----------
+
 def load_fake_news_dataset(max_samples: int = 2000) -> TaskData:
     task_dir = download_kaggle_dataset("fake_news")
-    # dataset has "Fake.csv" and "True.csv"
     fake_path = task_dir / "Fake.csv"
     true_path = task_dir / "True.csv"
     if not fake_path.exists() or not true_path.exists():
@@ -42,78 +43,56 @@ def load_fake_news_dataset(max_samples: int = 2000) -> TaskData:
 
     df = pd.concat([fake_df, true_df], ignore_index=True)
     df = df.sample(frac=1.0, random_state=42).head(max_samples)
-    texts = df["title"].fillna("") + " " + df["text"].fillna("")
+
+    texts = (df["title"].fillna("") + " " + df["text"].fillna("")).astype(str)
     return texts.tolist(), df["label"].astype(int).tolist()
 
 
+# ---------- NEW Amazon Reviews: Fine Food (Score 1–2 vs 4–5) ----------
+
 def load_amazon_reviews_dataset(max_samples: int = 2000) -> TaskData:
     """
-    Kaggle dataset: bittlingmayer/amazonreviews
-    Files like train.ft.txt / test.ft.txt in fastText format:
-      __label__1 This is a bad review...
-      __label__2 This is a good review...
-    We'll parse the first *.ft.txt file we find.
+    Kaggle dataset: snap/amazon-fine-food-reviews
+
+    File: Reviews.csv
+    Columns: 'Score' (1-5), 'Text' (review), 'Summary' etc.
+
+    We create a binary label:
+        0 = negative (Score <= 2)
+        1 = positive (Score >= 4)
+    Score == 3 is treated as neutral and dropped.
     """
     task_dir = download_kaggle_dataset("amazon_reviews")
 
-    # Prefer fastText files
-    ft_files = list(task_dir.glob("*.ft.txt"))
-    txt_files = list(task_dir.glob("*.txt")) if not ft_files else []
-    candidates = ft_files or txt_files
+    # Handle both direct and nested locations
+    candidates = list(task_dir.rglob("Reviews.csv"))
     if not candidates:
-        raise RuntimeError(
-            "No fastText .ft.txt or .txt files found in amazon reviews dataset."
-        )
+        raise RuntimeError("Reviews.csv not found in Amazon Fine Food dataset.")
 
-    data_path = candidates[0]
-    texts: List[str] = []
-    labels: List[int] = []
+    csv_path = candidates[0]
+    df = pd.read_csv(csv_path)
 
-    with open(data_path, "r", encoding="utf-8", errors="ignore") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
+    if "Score" not in df.columns or "Text" not in df.columns:
+        raise RuntimeError("Expected 'Score' and 'Text' columns in Reviews.csv.")
 
-            parts = line.split()
-            # collect leading __label__ tokens
-            label_tokens = []
-            i = 0
-            while i < len(parts) and parts[i].startswith("__label__"):
-                label_tokens.append(parts[i])
-                i += 1
-            if not label_tokens or i >= len(parts):
-                continue  # malformed line
+    # Drop neutral reviews
+    df = df[(df["Score"] <= 2) | (df["Score"] >= 4)]
 
-            # fastText uses __label__1 / __label__2 (1 = neg, 2 = pos)
-            first_label = label_tokens[0]
-            if first_label.endswith("1"):
-                label = 0
-            elif first_label.endswith("2"):
-                label = 1
-            else:
-                # fall back: even/odd as 0/1
-                try:
-                    num = int(first_label.split("__label__")[-1])
-                    label = int(num % 2 == 1)
-                except Exception:
-                    continue
+    # Binary label
+    labels = (df["Score"] >= 4).astype(int)
 
-            text = " ".join(parts[i:])
-            if not text:
-                continue
+    texts = df["Text"].astype(str)
+    # prepend summary if present
+    if "Summary" in df.columns:
+        texts = df["Summary"].fillna("").astype(str) + " : " + texts
 
-            texts.append(text)
-            labels.append(label)
-            if len(texts) >= max_samples:
-                break
+    df = pd.DataFrame({"text": texts, "label": labels})
+    df = df.sample(frac=1.0, random_state=42).head(max_samples)
 
-    if not texts:
-        raise RuntimeError("Parsed 0 examples from Amazon reviews fastText file.")
-
-    return texts, labels
+    return df["text"].tolist(), df["label"].astype(int).tolist()
 
 
+# ---------- Hate Speech ----------
 
 def load_hate_speech_dataset(max_samples: int = 2000) -> TaskData:
     task_dir = download_kaggle_dataset("hate_speech")
@@ -121,7 +100,7 @@ def load_hate_speech_dataset(max_samples: int = 2000) -> TaskData:
     if not csv_files:
         raise RuntimeError("Hate speech CSV not found.")
     df = pd.read_csv(csv_files[0])
-    # many variants; assume columns 'tweet' and 'class' or similar
+
     text_col = "tweet" if "tweet" in df.columns else df.columns[-1]
     label_col = "class" if "class" in df.columns else df.columns[0]
 
@@ -130,6 +109,8 @@ def load_hate_speech_dataset(max_samples: int = 2000) -> TaskData:
     labels = df[label_col].astype(int).tolist()
     return texts, labels
 
+
+# ---------- POS Structural Task (Treebank) ----------
 
 def ensure_nltk_treebank():
     try:
@@ -141,25 +122,20 @@ def ensure_nltk_treebank():
 
 def load_pos_treebank_dataset(max_samples: int = 2000) -> TaskData:
     """
-    Create a simple POS tagging-style classification dataset:
-    each sample = one sentence; label = majority POS tag category index.
-    Not perfect, but enough to have a 'structural' probing task.
+    Simple sentence-level POS majority label.
     """
     ensure_nltk_treebank()
     from nltk.corpus import treebank
 
     tagged_sents = treebank.tagged_sents(tagset="universal")[: max_samples]
-    texts = []
-    labels = []
+    texts: List[str] = []
+    labels: List[int] = []
 
-    # map tag to index
     tag_to_id = {}
-
     for sent in tagged_sents:
         words = [w for (w, t) in sent]
         tags = [t for (w, t) in sent]
         text = " ".join(words)
-        # majority tag as label
         maj_tag = max(set(tags), key=tags.count)
         if maj_tag not in tag_to_id:
             tag_to_id[maj_tag] = len(tag_to_id)

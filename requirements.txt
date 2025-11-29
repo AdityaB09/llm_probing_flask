@@ -1,0 +1,18 @@
+flask==3.0.3
+flask-wtf==1.2.1
+wtforms==3.1.2
+
+transformers==4.44.2
+torch>=2.2.0
+scikit-learn==1.5.2
+numpy==1.26.4
+pandas==2.2.3
+
+kaggle==1.6.17
+nltk==3.9.1
+
+matplotlib==3.9.0
+seaborn==0.13.2
+
+# optional but nice
+tqdm==4.66.5

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-light mb-2">
+  Probe Run Details
+</h2>
+<p class="text-muted mb-3">
+  Model: <strong>{{ run.model_name }}</strong> |
+  Task: <code>{{ run.task_name }}</code> |
+  Timestamp (UTC): {{ run.timestamp }}
+</p>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-8">
+    <div class="card card-glass">
+      <div class="card-body">
+        <h5 class="card-title text-light">Layerwise Metrics</h5>
+        {% if run.layer_metrics %}
+          <canvas id="detailMetricsChart" height="260"></canvas>
+        {% else %}
+          <p class="text-muted small">
+            This run was created before layer-wise metrics were stored.
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glass h-100">
+      <div class="card-body">
+        <h5 class="card-title text-light">Quick Summary</h5>
+        <p class="mb-1">
+          Best layer:
+          <span class="badge bg-info">{{ run.best_layer }}</span>
+        </p>
+        <p class="mb-1">
+          F1:
+          <span class="badge bg-success">{{ "%.3f"|format(run.best_f1) }}</span>
+        </p>
+        <p class="mb-3">
+          Accuracy:
+          <span class="badge bg-warning text-dark">{{ "%.3f"|format(run.best_acc) }}</span>
+        </p>
+        <p class="small text-muted">
+          Max samples: {{ run.max_samples }}<br>
+          Max seq length: {{ run.max_length }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-glass mb-4">
+  <div class="card-body">
+    <h5 class="card-title text-light">Interpretation</h5>
+    <p class="text-muted">
+      {{ explanation|safe }}
+    </p>
+  </div>
+</div>
+
+{% if run.layer_metrics %}
+<script>
+  const lm = {{ run.layer_metrics|tojson }};
+  initResultsCharts(lm, "detailMetricsChart");
+</script>
+{% endif %}
+{% endblock %}

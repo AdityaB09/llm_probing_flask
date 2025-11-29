@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-lg-8">
+    <h1 class="display-5 fw-bold text-light">Layerwise Probing Dashboard</h1>
+    <p class="lead text-muted">
+      Explore how transformer layers encode <span class="fw-semibold">structure, emotion, and credibility</span>
+      across multiple NLP tasks.
+    </p>
+    <a href="{{ url_for('run_probe_view') }}" class="btn btn-primary btn-lg shadow-glow mt-2">
+      ⚡ Start a New Probe
+    </a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  {% for key, label in tasks.items() %}
+  <div class="col-md-4">
+    <div class="card card-glass h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ label }}</h5>
+        <p class="card-text text-muted small">
+          {% if 'Sarcasm' in label %}
+            Affective task – ironic vs non-ironic headlines.
+          {% elif 'Fake' in label %}
+            Credibility – fake vs real news sources.
+          {% elif 'Amazon' in label %}
+            Sentiment – review polarity classification.
+          {% elif 'Hate' in label %}
+            Social-safety – toxic vs benign content.
+          {% else %}
+            Structural – POS tag distribution over sentences.
+          {% endif %}
+        </p>
+        <span class="badge bg-gradient-primary-soft">Task: {{ key }}</span>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h4 class="text-light mb-3">Recent Runs</h4>
+<div class="row">
+  <div class="col-lg-8">
+    {% if recent_runs %}
+      <ul class="list-group list-group-flush bg-transparent">
+        {% for run in recent_runs %}
+        <li class="list-group-item bg-transparent text-light border-secondary-subtle">
+          <div class="d-flex justify-content-between flex-wrap">
+            <div>
+              <strong>{{ run.model_name }}</strong> on <code>{{ run.task_name }}</code>
+              → best layer <span class="badge bg-info">{{ run.best_layer }}</span>
+            </div>
+            <div>
+              F1: <span class="badge bg-success">{{ "%.3f"|format(run.best_f1) }}</span>
+              Acc: <span class="badge bg-warning text-dark">{{ "%.3f"|format(run.best_acc) }}</span>
+            </div>
+          </div>
+          <small class="text-muted"> {{ run.timestamp }}</small>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">No runs yet — launch your first probe!</p>
+    {% endif %}
+  </div>
+  <div class="col-lg-4">
+    <div class="card card-glass h-100">
+      <div class="card-body">
+        <h5 class="card-title">Live Activity</h5>
+        <canvas id="historySparkline" height="150"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

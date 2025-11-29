@@ -17,12 +17,6 @@ def load_history() -> List[Dict[str, Any]]:
 
 
 def append_run(run_record: Dict[str, Any]):
-    """
-    Adds run_id and timestamp, prepends to history.
-    run_record can contain:
-      model_name, task_name, max_samples, max_length,
-      best_layer, best_f1, best_acc, layer_metrics, ...
-    """
     history = load_history()
     if "run_id" not in run_record:
         run_record["run_id"] = str(int(time.time() * 1000))

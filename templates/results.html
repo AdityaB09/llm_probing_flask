@@ -2,50 +2,50 @@
 {% block content %}
 <div class="row mb-3">
   <div class="col">
-    <h2 class="text-light">
+    <h2 class="text-title">
       Results: {{ model_name }} on {{ task_label }}
     </h2>
-    <p class="text-muted">
-      Samples: {{ result.num_samples }} | Layers: {{ result.num_layers }} | Classes: {{ result.num_classes }}
+    <p class="text-subtle">
+      Samples: {{ result.num_samples }} · Layers: {{ result.num_layers }} · Classes: {{ result.num_classes }}
     </p>
   </div>
 </div>
 
 <div class="row g-4">
   <div class="col-md-6">
-    <div class="card card-glass">
+    <div class="card card-panel">
       <div class="card-body">
-        <h5 class="card-title text-light">Layerwise Accuracy & F1</h5>
+        <h5 class="card-title text-panel">Layerwise Accuracy & F1</h5>
         <canvas id="metricsChart" height="240"></canvas>
       </div>
     </div>
   </div>
   <div class="col-md-6">
-    <div class="card card-glass">
+    <div class="card card-panel">
       <div class="card-body">
-        <h5 class="card-title text-light">Calibration Error (ECE)</h5>
+        <h5 class="card-title text-panel">Calibration Error (ECE)</h5>
         <canvas id="eceChart" height="240"></canvas>
       </div>
     </div>
   </div>
 </div>
+
 <div class="row mt-4">
   <div class="col">
-    <div class="card card-glass mb-3">
+    <div class="card card-panel mb-3">
       <div class="card-body">
-        <h5 class="card-title text-light">What does this probe tell us?</h5>
-        <p class="text-muted">
+        <h5 class="card-title text-panel">What did we learn?</h5>
+        <p class="text-panel-subtle">
           {{ explanation|safe }}
         </p>
       </div>
     </div>
-<div class="row mt-4">
-  <div class="col">
-    <div class="card card-glass">
+
+    <div class="card card-panel">
       <div class="card-body">
-        <h5 class="card-title text-light">Layerwise Table</h5>
+        <h5 class="card-title text-panel">Layerwise Table</h5>
         <div class="table-responsive">
-          <table class="table table-dark table-striped align-middle small">
+          <table class="table table-dark table-striped align-middle small mb-0">
             <thead>
             <tr>
               <th>Layer</th>

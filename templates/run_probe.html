@@ -2,40 +2,60 @@
 {% block content %}
 <div class="row g-4">
   <div class="col-lg-6">
-    <div class="card card-glass">
+    <div class="card card-panel">
       <div class="card-body">
-        <h3 class="card-title mb-3 text-light">Configure a Probe Run</h3>
+        <h3 class="card-title text-panel mb-3">Configure a Probe Run</h3>
+
+        {% if error_message %}
+        <div class="alert alert-danger small">
+          <strong>Run failed:</strong> {{ error_message }}
+        </div>
+        {% endif %}
+
         <form method="post" onsubmit="showLoadingOverlay()">
           <div class="mb-3">
-            <label class="form-label text-light">Model</label>
-            <select class="form-select" name="model_name">
+            <label class="form-label text-panel">Model</label>
+            <select class="form-select form-select-sm" name="model_name">
               {% for m in models %}
-              <option value="{{ m }}">{{ m }}</option>
+              <option value="{{ m }}"
+                {% if preselected_model==m %}selected{% endif %}>
+                {{ m }}
+              </option>
               {% endfor %}
             </select>
           </div>
 
           <div class="mb-3">
-            <label class="form-label text-light">Task</label>
-            <select class="form-select" name="task_name">
+            <label class="form-label text-panel">Task</label>
+            <select class="form-select form-select-sm" name="task_name">
               {% for key, label in tasks.items() %}
-              <option value="{{ key }}">{{ label }}</option>
+              <option value="{{ key }}"
+                {% if preselected_task==key %}selected{% endif %}>
+                {{ label }}
+              </option>
               {% endfor %}
             </select>
           </div>
 
           <div class="mb-3">
-            <label class="form-label text-light">Max samples</label>
-            <input type="number" name="max_samples" class="form-control" value="500" min="100" max="2000">
-            <div class="form-text">Higher = slower but smoother curves.</div>
+            <label class="form-label text-panel">Max samples</label>
+            <input type="number" name="max_samples"
+                   class="form-control form-control-sm"
+                   value="500" min="100" max="5000">
+            <div class="form-text text-subtle">
+              Higher = smoother curves, lower = faster runs.
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label text-light">Max sequence length</label>
-            <input type="number" name="max_length" class="form-control" value="64" min="32" max="256">
+          <div class="mb-4">
+            <label class="form-label text-panel">Max sequence length</label>
+            <input type="number" name="max_length"
+                   class="form-control form-control-sm"
+                   value="64" min="32" max="256">
           </div>
 
-          <button type="submit" class="btn btn-primary w-100 btn-lg shadow-glow">
+          <button type="submit"
+                  class="btn btn-accent w-100 btn-lg shadow-glow">
             🚀 Launch Probing Run
           </button>
         </form>
@@ -44,20 +64,22 @@
   </div>
 
   <div class="col-lg-6">
-    <div class="card card-glass h-100">
+    <div class="card card-panel h-100">
       <div class="card-body">
-        <h4 class="card-title text-light mb-3">What happens under the hood?</h4>
-        <ol class="text-muted small">
-          <li>Download & cache the dataset via Kaggle API.</li>
-          <li>Sample up to N examples and split into train/test.</li>
-          <li>Extract <strong>hidden states from every transformer layer</strong>.</li>
-          <li>Train a lightweight logistic regression probe per layer.</li>
-          <li>Compute <em>Accuracy</em>, <em>Weighted F1</em>, and <em>ECE</em>.</li>
-          <li>Render heatmaps and line charts over model depth.</li>
+        <h4 class="card-title text-panel mb-3">
+          What happens under the hood?
+        </h4>
+        <ol class="text-panel-subtle small">
+          <li>Download & cache the dataset (Kaggle or NLTK).</li>
+          <li>Sample N examples and split into train/test.</li>
+          <li>Extract hidden states from every transformer layer.</li>
+          <li>Train a logistic regression probe per layer.</li>
+          <li>Compute accuracy, weighted F1, and calibration error.</li>
         </ol>
-        <p class="text-muted small">
-          You’ll see which layers are best for <em>structure, emotion, and credibility</em>
-          — exactly matching your IR proposal.
+        <p class="text-panel-subtle small mb-0">
+          The result is a <strong>profile of information flow</strong> across
+          depth: where sentiment, toxicity, or structure becomes most linearly
+          separable.
         </p>
       </div>
     </div>

@@ -1,6 +1,281 @@
 [
   {
     "model_name": "distilbert-base-uncased",
+    "task_name": "sarcasm_kaggle",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 2,
+    "best_f1": 0.82,
+    "best_acc": 0.82,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.75,
+        "f1_weighted": 0.75017586172244,
+        "ece": 0.12589472144030026
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.78,
+        "f1_weighted": 0.780352564102564,
+        "ece": 0.09856652660562126
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.82,
+        "f1_weighted": 0.82,
+        "ece": 0.09885646216529304
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.77,
+        "f1_weighted": 0.7701617927846448,
+        "ece": 0.10893654287663626
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.78,
+        "f1_weighted": 0.7795555555555554,
+        "ece": 0.09557129341782272
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.82,
+        "f1_weighted": 0.8191233766233765,
+        "ece": 0.1268664095938703
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.79,
+        "f1_weighted": 0.7898094565984475,
+        "ece": 0.10005215450728311
+      }
+    ],
+    "run_id": "1764395856395",
+    "timestamp": "2025-11-29T05:57:36.395014Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "amazon_reviews",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 4,
+    "best_f1": 0.9095313881520778,
+    "best_acc": 0.92,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8265372829417774,
+        "ece": 0.03436432126648177
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8265372829417774,
+        "ece": 0.051378103841316976
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.87,
+        "f1_weighted": 0.8429525915008598,
+        "ece": 0.039294323175050674
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.89,
+        "f1_weighted": 0.8730285714285714,
+        "ece": 0.041067054865964625
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.92,
+        "f1_weighted": 0.9095313881520778,
+        "ece": 0.04211335364550384
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.89,
+        "f1_weighted": 0.8730285714285714,
+        "ece": 0.036491285476522264
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.89,
+        "f1_weighted": 0.8779661742667523,
+        "ece": 0.05711294125983692
+      }
+    ],
+    "run_id": "1764395740671",
+    "timestamp": "2025-11-29T05:55:40.671428Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "fake_news",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 0,
+    "best_f1": 1.0,
+    "best_acc": 1.0,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 1.0,
+        "f1_weighted": 1.0,
+        "ece": 0.07763183550327021
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.99,
+        "f1_weighted": 0.9900050125313282,
+        "ece": 0.0526234571104838
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.96,
+        "f1_weighted": 0.9600320512820514,
+        "ece": 0.05910671705698537
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.97,
+        "f1_weighted": 0.970015037593985,
+        "ece": 0.037245888595575975
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.98,
+        "f1_weighted": 0.9800160256410255,
+        "ece": 0.03520274308357469
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.97,
+        "f1_weighted": 0.9700270243218898,
+        "ece": 0.041989859569578576
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.97,
+        "f1_weighted": 0.9700270243218898,
+        "ece": 0.03449554825926603
+      }
+    ],
+    "run_id": "1764383685909",
+    "timestamp": "2025-11-29T02:34:45.909312Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "pos_treebank",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 0,
+    "best_f1": 0.8649784283513097,
+    "best_acc": 0.89,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.89,
+        "f1_weighted": 0.8649784283513097,
+        "ece": 0.03776204822900376
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8336363636363636,
+        "ece": 0.061670340991518934
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.87,
+        "f1_weighted": 0.836370786516854,
+        "ece": 0.037155534454905936
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.87,
+        "f1_weighted": 0.8339263420724095,
+        "ece": 0.051900112835800156
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.88,
+        "f1_weighted": 0.8507966101694915,
+        "ece": 0.04620834462777606
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8260034974441754,
+        "ece": 0.06150857983764471
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8269325842696631,
+        "ece": 0.08051498008742099
+      }
+    ],
+    "run_id": "1764381480906",
+    "timestamp": "2025-11-29T01:58:00.906494Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "pos_treebank",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 0,
+    "best_f1": 0.8649784283513097,
+    "best_acc": 0.89,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.89,
+        "f1_weighted": 0.8649784283513097,
+        "ece": 0.03776204822900376
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8336363636363636,
+        "ece": 0.061670340991518934
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.87,
+        "f1_weighted": 0.836370786516854,
+        "ece": 0.037155534454905936
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.87,
+        "f1_weighted": 0.8339263420724095,
+        "ece": 0.051900112835800156
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.88,
+        "f1_weighted": 0.8507966101694915,
+        "ece": 0.04620834462777606
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8260034974441754,
+        "ece": 0.06150857983764471
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8269325842696631,
+        "ece": 0.08051498008742099
+      }
+    ],
+    "run_id": "1764381361608",
+    "timestamp": "2025-11-29T01:56:01.608846Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
     "task_name": "pos_treebank",
     "max_samples": 500,
     "max_length": 64,

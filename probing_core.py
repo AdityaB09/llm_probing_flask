@@ -5,8 +5,10 @@ from typing import Dict, Any, List
 
 import numpy as np
 import torch
+import warnings
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+from sklearn.exceptions import ConvergenceWarning
 from transformers import AutoModel, AutoTokenizer
 
 from datasets import TASK_LOADERS
@@ -25,12 +27,7 @@ class ProbeConfig:
 
 
 def mean_pool_hidden_states(hidden_states: torch.Tensor, attention_mask: torch.Tensor) -> np.ndarray:
-    """
-    hidden_states: (batch, seq_len, hidden_dim)
-    attention_mask: (batch, seq_len)
-    returns: (batch, hidden_dim)
-    """
-    mask = attention_mask.unsqueeze(-1)  # (b, seq, 1)
+    mask = attention_mask.unsqueeze(-1)
     masked = hidden_states * mask
     summed = masked.sum(dim=1)
     counts = mask.sum(dim=1).clamp(min=1e-9)
@@ -38,18 +35,14 @@ def mean_pool_hidden_states(hidden_states: torch.Tensor, attention_mask: torch.T
 
 
 def extract_layerwise_representations(config: ProbeConfig, texts: List[str]):
-    """
-    Returns:
-      layer_reprs: list of np.ndarray of shape (N, hidden_dim) for each layer
-    """
     tokenizer = AutoTokenizer.from_pretrained(config.model_name)
     model = AutoModel.from_pretrained(config.model_name, output_hidden_states=True)
     model.to(config.device)
     model.eval()
 
     all_layer_reprs = None
-
     bs = 16
+
     with torch.no_grad():
         for i in range(0, len(texts), bs):
             batch_texts = texts[i : i + bs]
@@ -62,30 +55,24 @@ def extract_layerwise_representations(config: ProbeConfig, texts: List[str]):
             )
             enc = {k: v.to(config.device) for k, v in enc.items()}
             outputs = model(**enc)
-            hidden_states = outputs.hidden_states  # tuple(len_layers) of (b, seq, hid)
+            hidden_states = outputs.hidden_states
 
             batch_layer_pools = [
                 mean_pool_hidden_states(hs, enc["attention_mask"])
                 for hs in hidden_states
-            ]  # list of (b, hid) np arrays
+            ]
 
             if all_layer_reprs is None:
                 all_layer_reprs = [arr for arr in batch_layer_pools]
             else:
                 for layer_idx, arr in enumerate(batch_layer_pools):
-                    all_layer_reprs[layer_idx] = np.vstack([all_layer_reprs[layer_idx], arr])
-
-    return all_layer_reprs  # list length = n_layers
+                    all_layer_reprs[layer_idx] = np.vstack(
+                        [all_layer_reprs[layer_idx], arr]
+                    )
+    return all_layer_reprs
 
 
 def run_layerwise_probing(config: ProbeConfig) -> Dict[str, Any]:
-    """
-    Main pipeline used by the Flask app.
-    Returns a dict with:
-      - config
-      - layer_metrics: list of dicts per layer
-      - num_layers, num_samples, num_classes
-    """
     if config.task_name not in TASK_LOADERS:
         raise ValueError(f"Unknown task: {config.task_name}")
 
@@ -116,25 +103,28 @@ def run_layerwise_probing(config: ProbeConfig) -> Dict[str, Any]:
         X_test = test_layer_reprs[layer_idx]
 
         clf = LogisticRegression(
-            max_iter=200,
+            max_iter=500,          # more iterations to converge
             n_jobs=-1,
-            multi_class="auto",
-            class_weight="balanced",
+            solver="lbfgs",        # good default, multinomial by default soon
         )
-        clf.fit(X_train, y_train)
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=ConvergenceWarning)
+            clf.fit(X_train, y_train)
 
         probas = clf.predict_proba(X_test)
         preds = probas.argmax(axis=1)
 
         m = compute_basic_metrics(y_test, preds)
         ece = expected_calibration_error(y_test, probas)
-        record = {
-            "layer_index": layer_idx,
-            "accuracy": m["accuracy"],
-            "f1_weighted": m["f1_weighted"],
-            "ece": ece,
-        }
-        layer_metrics.append(record)
+        layer_metrics.append(
+            {
+                "layer_index": layer_idx,
+                "accuracy": m["accuracy"],
+                "f1_weighted": m["f1_weighted"],
+                "ece": ece,
+            }
+        )
 
     num_classes = int(labels.max() + 1)
 

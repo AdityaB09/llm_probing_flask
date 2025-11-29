@@ -4,41 +4,42 @@
   <meta charset="utf-8">
   <title>LLM Probing Lab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Simple CDN for fonts & chart.js -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
-<body class="bg-gradient">
+<body class="bg-orbit">
 
-<nav class="navbar navbar-dark navbar-blur mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
-      🔍 LLM Probing Lab
+<nav class="navbar navbar-dark nav-glass mb-4">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2"
+       href="{{ url_for('index') }}">
+      <span class="brand-dot"></span>
+      <span>LLM Probing Lab</span>
     </a>
-    <div>
-      <a class="nav-link d-inline text-light" href="{{ url_for('run_probe_view') }}">Run Probe</a>
-      <a class="nav-link d-inline text-light" href="{{ url_for('history_view') }}">Run History</a>
+    <div class="d-flex gap-3">
+      <a class="nav-link nav-link-pill" href="{{ url_for('run_probe_view') }}">Run Probe</a>
+      <a class="nav-link nav-link-pill" href="{{ url_for('history_view') }}">Run History</a>
     </div>
   </div>
 </nav>
 
 <div id="loading-overlay" class="loading-overlay d-none">
-  <div class="loading-orbit">
-    <div class="orbit-circle"></div>
-    <div class="orbit-circle"></div>
-    <div class="orbit-circle"></div>
+  <div class="loading-core">
+    <div class="loading-ring"></div>
+    <div class="loading-ring ring-secondary"></div>
+    <div class="loading-pulse"></div>
   </div>
   <p id="loading-message" class="mt-3 text-light fw-semibold text-center">
     Preparing your probe run…
   </p>
-  <p class="text-muted small mt-2">
-    We’ll: ① download data → ② split train/test → ③ extract layer representations → ④ train probes → ⑤ compute metrics.
+  <p class="text-muted small mt-2 text-center">
+    ① download data → ② split train/test → ③ extract layers → ④ train probes → ⑤ compute metrics.
   </p>
 </div>
 
-
-<main class="container pb-5">
+<main class="container-fluid px-4 pb-5">
   {% block content %}{% endblock %}
 </main>
 

@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row mb-4">
-  <div class="col-lg-8">
-    <h1 class="display-5 fw-bold text-light">Layerwise Probing Dashboard</h1>
-    <p class="lead text-muted">
-      Explore how transformer layers encode <span class="fw-semibold">structure, emotion, and credibility</span>
-      across multiple NLP tasks.
+  <div class="col-lg-7">
+    <h1 class="display-5 fw-bold text-title mb-2">
+      Layerwise Probing Dashboard
+    </h1>
+    <p class="lead text-subtle">
+      Explore how transformer layers encode <strong>structure</strong>,
+      <strong>emotion</strong>, and <strong>credibility</strong> across multiple NLP tasks.
     </p>
-    <a href="{{ url_for('run_probe_view') }}" class="btn btn-primary btn-lg shadow-glow mt-2">
+    <a href="{{ url_for('run_probe_view') }}"
+       class="btn btn-accent btn-lg shadow-glow mt-2">
       ⚡ Start a New Probe
     </a>
   </div>
@@ -15,60 +18,70 @@
 
 <div class="row g-3 mb-4">
   {% for key, label in tasks.items() %}
-  <div class="col-md-4">
-    <div class="card card-glass h-100">
-      <div class="card-body">
-        <h5 class="card-title">{{ label }}</h5>
-        <p class="card-text text-muted small">
-          {% if 'Sarcasm' in label %}
-            Affective task – ironic vs non-ironic headlines.
-          {% elif 'Fake' in label %}
-            Credibility – fake vs real news sources.
-          {% elif 'Amazon' in label %}
-            Sentiment – review polarity classification.
-          {% elif 'Hate' in label %}
-            Social-safety – toxic vs benign content.
-          {% else %}
-            Structural – POS tag distribution over sentences.
-          {% endif %}
-        </p>
-        <span class="badge bg-gradient-primary-soft">Task: {{ key }}</span>
+  <div class="col-xl-3 col-md-6">
+    <a href="{{ url_for('run_probe_view') }}?task={{ key }}"
+       class="task-card-link text-decoration-none">
+      <div class="card card-panel h-100">
+        <div class="card-body">
+          <h5 class="card-title text-panel">{{ label }}</h5>
+          <p class="card-text text-panel-subtle small mb-3">
+            {% if 'Sarcasm' in label %}
+              Affective task – ironic vs non-ironic headlines.
+            {% elif 'Fake' in label %}
+              Credibility – fake vs real news sources.
+            {% elif 'Amazon' in label %}
+              Product sentiment – positive vs negative fine food reviews.
+            {% elif 'Hate' in label %}
+              Social-safety – toxic vs benign content.
+            {% else %}
+              Structural – POS tag distribution over sentences.
+            {% endif %}
+          </p>
+          <span class="badge badge-chip">Task: {{ key }}</span>
+        </div>
       </div>
-    </div>
+    </a>
   </div>
   {% endfor %}
 </div>
 
-<h4 class="text-light mb-3">Recent Runs</h4>
-<div class="row">
-  <div class="col-lg-8">
+<div class="row g-4">
+  <div class="col-xl-8">
+    <h4 class="section-title mb-3">Recent Runs</h4>
     {% if recent_runs %}
-      <ul class="list-group list-group-flush bg-transparent">
+      <div class="list-group run-list">
         {% for run in recent_runs %}
-        <li class="list-group-item bg-transparent text-light border-secondary-subtle">
-          <div class="d-flex justify-content-between flex-wrap">
+        <a href="{{ url_for('run_detail', run_id=run.run_id) }}"
+           class="list-group-item list-group-item-action run-row">
+          <div class="d-flex justify-content-between flex-wrap gap-2">
             <div>
-              <strong>{{ run.model_name }}</strong> on <code>{{ run.task_name }}</code>
-              → best layer <span class="badge bg-info">{{ run.best_layer }}</span>
+              <span class="run-model">{{ run.model_name }}</span>
+              <span class="text-muted">on</span>
+              <span class="run-task">{{ run.task_name }}</span>
+              <span class="badge badge-layer ms-2">{{ run.best_layer }}</span>
             </div>
             <div>
-              F1: <span class="badge bg-success">{{ "%.3f"|format(run.best_f1) }}</span>
-              Acc: <span class="badge bg-warning text-dark">{{ "%.3f"|format(run.best_acc) }}</span>
+              <span class="metric-pill metric-f1">F1 {{ "%.3f"|format(run.best_f1) }}</span>
+              <span class="metric-pill metric-acc ms-2">Acc {{ "%.3f"|format(run.best_acc) }}</span>
             </div>
           </div>
-          <small class="text-muted"> {{ run.timestamp }}</small>
-        </li>
+          <small class="text-muted">{{ run.timestamp }}</small>
+        </a>
         {% endfor %}
-      </ul>
+      </div>
     {% else %}
-      <p class="text-muted">No runs yet — launch your first probe!</p>
+      <p class="text-subtle">No runs yet — launch your first probe!</p>
     {% endif %}
   </div>
-  <div class="col-lg-4">
-    <div class="card card-glass h-100">
+
+  <div class="col-xl-4">
+    <div class="card card-panel h-100">
       <div class="card-body">
-        <h5 class="card-title">Live Activity</h5>
-        <canvas id="historySparkline" height="150"></canvas>
+        <h5 class="card-title text-panel mb-2">Live Activity</h5>
+        <p class="text-panel-subtle small">
+          Best F1 from your last few runs.
+        </p>
+        <canvas id="historySparkline" height="180"></canvas>
       </div>
     </div>
   </div>

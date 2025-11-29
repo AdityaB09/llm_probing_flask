@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<h2 class="text-light mb-3">Run History</h2>
+<h2 class="text-title mb-3">Run History</h2>
 
 {% if history %}
   <div class="table-responsive">
-    <table class="table table-dark table-striped small align-middle">
+    <table class="table table-dark table-striped align-middle small">
       <thead>
       <tr>
         <th>Timestamp (UTC)</th>
@@ -17,28 +17,24 @@
         <th>Max Length</th>
       </tr>
       </thead>
-   <tbody>
-{% for r in history %}
-  <tr>
-    <td>
-      <a href="{{ url_for('run_detail', run_id=r.run_id) }}" class="link-light text-decoration-none">
-        {{ r.timestamp }}
-      </a>
-    </td>
-    <td>{{ r.model_name }}</td>
-    <td><code>{{ r.task_name }}</code></td>
-    <td>{{ r.best_layer }}</td>
-    <td>{{ "%.3f"|format(r.best_f1) }}</td>
-    <td>{{ "%.3f"|format(r.best_acc) }}</td>
-    <td>{{ r.max_samples }}</td>
-    <td>{{ r.max_length }}</td>
-  </tr>
-{% endfor %}
-</tbody>
-
+      <tbody>
+      {% for r in history %}
+      <tr class="history-row"
+          onclick="window.location='{{ url_for('run_detail', run_id=r.run_id) }}'">
+        <td>{{ r.timestamp }}</td>
+        <td>{{ r.model_name }}</td>
+        <td><code>{{ r.task_name }}</code></td>
+        <td>{{ r.best_layer }}</td>
+        <td>{{ "%.3f"|format(r.best_f1) }}</td>
+        <td>{{ "%.3f"|format(r.best_acc) }}</td>
+        <td>{{ r.max_samples }}</td>
+        <td>{{ r.max_length }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
     </table>
   </div>
 {% else %}
-  <p class="text-muted">No history yet. Run a probe first.</p>
+  <p class="text-subtle">No history yet.</p>
 {% endif %}
 {% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Compare Models{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Model Comparison</h1>
+  <p>Pick a task and two models. We’ll run probes and overlay their layerwise F1 curves.</p>
+
+  {% if error_message %}
+    <div class="alert error">{{ error_message }}</div>
+  {% endif %}
+
+  <form method="post" class="form-grid">
+    <label>
+      Task
+      <select name="task_name">
+        {% for key, label in tasks.items() %}
+        <option value="{{ key }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Model A
+      <select name="model_a">
+        {% for m in models %}
+        <option value="{{ m }}">{{ m }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Model B
+      <select name="model_b">
+        {% for m in models %}
+        <option value="{{ m }}">{{ m }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Max samples
+      <input type="number" name="max_samples" value="500" min="100" max="5000">
+    </label>
+
+    <label>
+      Max sequence length
+      <input type="number" name="max_length" value="64" min="32" max="256">
+    </label>
+
+    <button type="submit" class="primary-btn">Compare</button>
+  </form>
+</section>
+
+{% if comparison %}
+<section class="card">
+  <h2>{{ comparison.task_label }} – {{ comparison.model_a }} vs {{ comparison.model_b }}</h2>
+  <div class="chart-container">
+    <canvas id="compareChart"></canvas>
+  </div>
+</section>
+
+<script>
+  const metricsA = {{ comparison.metrics_a | tojson }};
+  const metricsB = {{ comparison.metrics_b | tojson }};
+  const labelA = "{{ comparison.model_a }}";
+  const labelB = "{{ comparison.model_b }}";
+  window.addEventListener("load", () => {
+    initCompareChart(metricsA, metricsB, labelA, labelB);
+  });
+</script>
+{% endif %}
+{% endblock %}

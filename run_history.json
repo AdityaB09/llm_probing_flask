@@ -1,6 +1,534 @@
 [
   {
     "model_name": "distilbert-base-uncased",
+    "task_name": "imdb_reviews",
+    "task_display_name": "IMDB Movie Reviews Sentiment (Kaggle)",
+    "max_samples": 500,
+    "max_length": 64,
+    "num_samples": 500,
+    "num_layers": 7,
+    "num_classes": 2,
+    "best_layer": 5,
+    "best_f1": 0.7193255720594138,
+    "best_acc": 0.72,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.67,
+        "f1_weighted": 0.6695037593984964,
+        "ece": 0.07852525731406851
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.67,
+        "f1_weighted": 0.6679040225829216,
+        "ece": 0.10011567914824869
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.66,
+        "f1_weighted": 0.6572525252525253,
+        "ece": 0.12431355050650066
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.61,
+        "f1_weighted": 0.6060917096872153,
+        "ece": 0.13276443749358224
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.66,
+        "f1_weighted": 0.6558603896103895,
+        "ece": 0.1400523089432249
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.72,
+        "f1_weighted": 0.7193255720594138,
+        "ece": 0.1835592152984999
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.7,
+        "f1_weighted": 0.6985507246376812,
+        "ece": 0.1095905622614646
+      }
+    ],
+    "example_predictions": [
+      {
+        "text": "It has to be admitted that the best work of Harold Lloyd ended with his last great silent comedy \"Speedy\" in 1928. After that he enters sound films (like Chaplin and Keaton and Laurel & Hardy and W.C. Fields) and does do better than Keaton, but not as well as the other three. Chaplin was rich enough to make his own films as producer (but he paced his films so there were five years between productions). Laurel & Hardy were under the protection of Hal Roach, so production standards for their shorts and sound films were pretty good. Fields first worked with Mack Sennett, than with Paramount, and then free-lanced. Lloyd tried the route that Chaplin took, but with less success.<br /><br />He produced his own films, but unlike Chaplin he did not own his own studio. Also his first two choices were not good (especially \"Feet First\"). But he did begin to choose more wisely and \"Movie Crazy\", \"The Cat's-Paw\", and \"The Milky Way\" were all good choices. These three (and possibly \"The Sin of Harold Diddlebock\") were his best sound ventures. They are all entertaining, but none are up to \"Safety Last\", \"The Freshman\", \"The Kid Brother\", or \"Speedy\". <br /><br />Of the top four sound films \"The Cat's Paw\" is the most controversial. Ezekiel Cobb's solution to ridding the city that elects him mayor is very extreme for the tastes of 2005. Or is it? When a movie is made dictates what it's politics are: \"The Cat's Paw\" is from 1934. That second year of the Roosevelt New Deal (itself rather controversial for heavier government involvement) movie audiences saw films like \"Gabriel Over the White House\" and \"The Phantom President\", where our leaders did extra-Constitutional actions to rid the nation of internal enemies (and to force disarmament around the globe). Even Cecil B. De Mille got into this act with \"This Day and Age\", where a bunch of teenagers use rats to force a gangster to confess his crimes.<br /><br />To us, the use of violence to force anyone (even a bunch of goons and boodlers like Alan Dinehart's gang) to confess is repellent. After all, the Supreme Court has protected us from confession under duress. What we forget is that the reforms we are thinking of did not occur until the Warren Court and the Burger Court made them. For example, although Mr. Justice Sutherland's opinion in the Powell (\"Scottsboro Boys\") Case of 1932 guaranteed every criminal defendant had a right to counsel, Gideon v. Wainwright did not extend this to ordering court paid counsel to defendants until 1962. The Miranda Case, with it's now well-known anti-self-incrimination warning is from 1963. Nothing like this were considered necessary in 1934.<br /><br />If you study other movies of the period up to 1954 (and even to 1960) tricks are used to get confessions - Kirk Douglas confesses his crimes in front of witnesses in \"I Walk Alone\" while Burt Lancaster holds a gun to him. When Lancaster leaves, Douglas sneers about confessing under duress, only to see the gun is unloaded. Suddenly he realizes that (legally - in 1948) he has confessed without duress. Hate to say it, to any civil libertarians reading this note, but what Cobb/Lloyd does to Dinehart and his pals in the conclusion of \"The Cat's Paw\" was not only legal, but would have led to their jail sentences in 1934. We may call it heavy handed, fascistic, or horrid, but it would have worked legally when it was thought up.",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.9976839583361831
+      },
+      {
+        "text": "My God. This movie was awful. I can't complain about it too much. I went to see it just to be grossed out. It did suffice, sort of. It's funny that the most disgusting part of the movie was in the very, very beginning where the woman is extremely vividly forced to give birth to a horribly mutated baby.<br /><br />I also think that it's funny that the most notable actor in the movie was the Hispanic soldier, who was a supporting actor in Next Friday. Everyone in the movie did a horrible acting job. It was some of the worst acting I've ever paid to see. <br /><br />I also expected that it would be much more gruesome than the first one. It wasn't. I expected it to be more gruesome because it's a sequel and horror movie sequels are usually much less successful than their predecessors. I expected it to be more gruesome since gore and violence usually sell a horror movie these days (Grudge 2, Saw 3, Jeepers Creepers 1 & 2, Dead Silence), but It actually wasn't nearly as gruesome as the first one, which was yet another disappointment. <br /><br />The mutants in the first one were kind of disturbing but the filmmakers were trying so hard in this one to make them creepy that they were absolutely hilarious.<br /><br />I also hated the entire concept of showing the clip of the female soldier's son on her camera-phone saying \"I love you, mommy\" FOUR TIMES. It was stupid to show it in the first place because they were just trying to make us feel worse for the vulnerable mother than the rest of the soldiers, and it was even more stupid to keep trying to make us feel even WORSE for her by showing it three more times for no reason. This movie was a joke.",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.9974726269859562
+      },
+      {
+        "text": "One of the best films I have seen in the past five years! The cast is universally spectacular in a tale of young love and bravado on the Lower East Side of New York City with the two leads being superstars in the making. Funny, charming, sad and inspiring, this is a totally refreshing take on urban youth that puts Larry Clark's often-nauseating shtick in the gutter where it belongs... although I have to admit that Bully was a cut above his normal fare. Raising Victor Vargas is one film you will kick yourself for missing... so don't miss it!",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.9967248007491439
+      },
+      {
+        "text": "Dear SciFi Channel: How have you been? How was your summer? I've been OK, but I feel like our relationship isn't the same anymore and we're growing apart. I don't understand why you don't love me anymore. I've just finished watching your SciFi Channel Original \"Skeleton Man\" and, once again, you've shown a blatant lack of respect for my feelings by KILLING OFF EVERY HOT GIRL IN THIS MOVIE!!! I mean, I understand that you're just in this for instant gratification. All you care about is producing a movie where people get sliced and diced by a homicidal Indian spirit/creature/legend/whatever. So you really don't have time to put some thought and effort into anything else -- like finding a costume for Skeleton Man that doesn't make him like the gay lover of Skeletor from \"He-Man.\" Seriously, his robe looks like a satin blanket sheet and his skull is smooth as a baby's behind, he almost looks like a killer Halloween-costume-for-a-6-year-old as he marches through the wilderness on a homicidal rampage. So we throw you a bone, because we're not looking for Oscar-winning performances, intriguing plot or realistic character reactions to the situations at hand. Because we realize that even though Michael Rooker, Caspar van Diem and all the girls are supposed to be trained Special Ops agents, they are all mysteriously transformed into Keystone Kops who can't shoot or see straight whenever Skeleton Man appears. And we also fully expect that nothing -- bullets, explosions, electrocution, nothing -- can kill Skeleton Man until there is one minute left in the movie and we need to find a way to tie things up neatly. We expect to see blood and guts. But you have a knack for taking the least attractive actress in the entire cast and making her the only female who survives. And quite honestly, I think you do it just to antagonize me. Because this movie, as silly as it is, has the potential to be a \"so-bad-it's-good\" classic and just killing off all the hotties ruins everything -- and forces me to lower its rating. All I ask is that once, just once, you take my feelings into account and let the sexiest girls survive the movie. Please.",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.9945231354952896
+      },
+      {
+        "text": "I was looking through the movie listings in my area on yahoo and seen a movie that had not been advertised. I looked closer and noticed that Peter Falk and Paul Reiser were in it. Having watched \"Mad about you\", once, I was not a fan of Paul Reiser. However, I am a big fan of Peter Falk. So the spouse and I took a chance. We were both swept into this story. The beautiful scenery, the heartfelt acting and the sense of family and moral values that are seldom seen in movies and the world today. Not that sappy emoted junk, but real life situations from real life-like people. I even have to say, Paul Reiser was excellent, although, I still won't watch \"Mad about you\". I don't know where this movie has gone. I heard it was put out in limited release. It should be shared with the world. It is one of the finest movies I have seen. M.",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.9428513294386515
+      },
+      {
+        "text": "The 1986 TV movie of The Spirit was a pilot for a possible series. However, Spirit creator Will Eisner did not like the film and thus no series was produced. I thought it was a very entertaining film and captured the spirit (sorry) of the comic with a modern twist. I'm sorry it didn't materialize into a series. Sam (Flash Gordon) Jones was a perfect Spirit. Nana Visitor was a nice Ellen Dolan and of course would later go on to Star Trek:Deep Space Nine years later. Maybe with the release of Frank Miller's big-screen version of The Spirit, more people will be able to see this rare gem of Spirit history. It seems that when Hollywood makes a film from an already established character or idea, someone will inevitably seek out previous versions of the property and release it to video in order to make a few dollars. When Antonio Banderas donned the mask of Zorro, we were able to get earlier versions of the masked hero on DVD, such as the great Alain Delon version of the 1970s (although all copies I ever saw were badly edited). Heres hoping someone will release the TV adventure of The Spirit to DVD soon.",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.9426337476896229
+      }
+    ],
+    "run_id": "1764470290993",
+    "timestamp": "2025-11-30T02:38:10.993148Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "sarcasm_kaggle",
+    "task_display_name": "Sarcasm Detection (Kaggle)",
+    "max_samples": 500,
+    "max_length": 64,
+    "num_samples": 500,
+    "num_layers": 7,
+    "num_classes": 2,
+    "best_layer": 2,
+    "best_f1": 0.82,
+    "best_acc": 0.82,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.75,
+        "f1_weighted": 0.75017586172244,
+        "ece": 0.12589472144030026
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.78,
+        "f1_weighted": 0.780352564102564,
+        "ece": 0.09856652660562126
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.82,
+        "f1_weighted": 0.82,
+        "ece": 0.09885646216529304
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.77,
+        "f1_weighted": 0.7701617927846448,
+        "ece": 0.10893654287663626
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.78,
+        "f1_weighted": 0.7795555555555554,
+        "ece": 0.09557129341782272
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.82,
+        "f1_weighted": 0.8191233766233765,
+        "ece": 0.1268664095938703
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.79,
+        "f1_weighted": 0.7898094565984475,
+        "ece": 0.10005215450728311
+      }
+    ],
+    "example_predictions": [],
+    "run_id": "1764463939185",
+    "timestamp": "2025-11-30T00:52:19.185130Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "amazon_reviews",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 4,
+    "best_f1": 0.9095313881520778,
+    "best_acc": 0.92,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8265372829417774,
+        "ece": 0.03436432126648177
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.86,
+        "f1_weighted": 0.8265372829417774,
+        "ece": 0.051378103841316976
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.87,
+        "f1_weighted": 0.8429525915008598,
+        "ece": 0.039294323175050674
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.89,
+        "f1_weighted": 0.8730285714285714,
+        "ece": 0.041067054865964625
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.92,
+        "f1_weighted": 0.9095313881520778,
+        "ece": 0.04211335364550384
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.89,
+        "f1_weighted": 0.8730285714285714,
+        "ece": 0.036491285476522264
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.89,
+        "f1_weighted": 0.8779661742667523,
+        "ece": 0.05711294125983692
+      }
+    ],
+    "run_id": "1764463245587",
+    "timestamp": "2025-11-30T00:40:45.587914Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "sarcasm_kaggle",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 2,
+    "best_f1": 0.82,
+    "best_acc": 0.82,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.75,
+        "f1_weighted": 0.75017586172244,
+        "ece": 0.12589472144030026
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.78,
+        "f1_weighted": 0.780352564102564,
+        "ece": 0.09856652660562126
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.82,
+        "f1_weighted": 0.82,
+        "ece": 0.09885646216529304
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.77,
+        "f1_weighted": 0.7701617927846448,
+        "ece": 0.10893654287663626
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.78,
+        "f1_weighted": 0.7795555555555554,
+        "ece": 0.09557129341782272
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.82,
+        "f1_weighted": 0.8191233766233765,
+        "ece": 0.1268664095938703
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.79,
+        "f1_weighted": 0.7898094565984475,
+        "ece": 0.10005215450728311
+      }
+    ],
+    "run_id": "1764463193803",
+    "timestamp": "2025-11-30T00:39:53.803471Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "sarcasm_kaggle",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 2,
+    "best_f1": 0.82,
+    "best_acc": 0.82,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.75,
+        "f1_weighted": 0.75017586172244,
+        "ece": 0.12589472144030026
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.78,
+        "f1_weighted": 0.780352564102564,
+        "ece": 0.09856652660562126
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.82,
+        "f1_weighted": 0.82,
+        "ece": 0.09885646216529304
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.77,
+        "f1_weighted": 0.7701617927846448,
+        "ece": 0.10893654287663626
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.78,
+        "f1_weighted": 0.7795555555555554,
+        "ece": 0.09557129341782272
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.82,
+        "f1_weighted": 0.8191233766233765,
+        "ece": 0.1268664095938703
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.79,
+        "f1_weighted": 0.7898094565984475,
+        "ece": 0.10005215450728311
+      }
+    ],
+    "example_predictions": [],
+    "run_id": "1764463117490",
+    "timestamp": "2025-11-30T00:38:37.490337Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "fake_news",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 0,
+    "best_f1": 1.0,
+    "best_acc": 1.0,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 1.0,
+        "f1_weighted": 1.0,
+        "ece": 0.07763183550327021
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.99,
+        "f1_weighted": 0.9900050125313282,
+        "ece": 0.0526234571104838
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.96,
+        "f1_weighted": 0.9600320512820514,
+        "ece": 0.05910671705698537
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.97,
+        "f1_weighted": 0.970015037593985,
+        "ece": 0.037245888595575975
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.98,
+        "f1_weighted": 0.9800160256410255,
+        "ece": 0.03520274308357469
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.97,
+        "f1_weighted": 0.9700270243218898,
+        "ece": 0.041989859569578576
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.97,
+        "f1_weighted": 0.9700270243218898,
+        "ece": 0.03449554825926603
+      }
+    ],
+    "example_predictions": [],
+    "run_id": "1764440810851",
+    "timestamp": "2025-11-29T18:26:50.851206Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "imdb_reviews",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 5,
+    "best_f1": 0.7193255720594138,
+    "best_acc": 0.72,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.67,
+        "f1_weighted": 0.6695037593984964,
+        "ece": 0.07852525731406851
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.67,
+        "f1_weighted": 0.6679040225829216,
+        "ece": 0.10011567914824869
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.66,
+        "f1_weighted": 0.6572525252525253,
+        "ece": 0.12431355050650066
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.61,
+        "f1_weighted": 0.6060917096872153,
+        "ece": 0.13276443749358224
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.66,
+        "f1_weighted": 0.6558603896103895,
+        "ece": 0.1400523089432249
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.72,
+        "f1_weighted": 0.7193255720594138,
+        "ece": 0.1835592152984999
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.7,
+        "f1_weighted": 0.6985507246376812,
+        "ece": 0.1095905622614646
+      }
+    ],
+    "example_predictions": [
+      {
+        "text": "It has to be admitted that the best work of Harold Lloyd ended with his last great silent comedy \"Speedy\" in 1928. After that he enters sound films (like Chaplin and Keaton and Laurel & Hardy and W.C. Fields) and does do better than Keaton, but not as well as the other three. Chaplin was rich enough to make his own films as producer (but he paced his films so there were five years between productions). Laurel & Hardy were under the protection of Hal Roach, so production standards for their shorts and sound films were pretty good. Fields first worked with Mack Sennett, than with Paramount, and then free-lanced. Lloyd tried the route that Chaplin took, but with less success.<br /><br />He produced his own films, but unlike Chaplin he did not own his own studio. Also his first two choices were not good (especially \"Feet First\"). But he did begin to choose more wisely and \"Movie Crazy\", \"The Cat's-Paw\", and \"The Milky Way\" were all good choices. These three (and possibly \"The Sin of Harold Diddlebock\") were his best sound ventures. They are all entertaining, but none are up to \"Safety Last\", \"The Freshman\", \"The Kid Brother\", or \"Speedy\". <br /><br />Of the top four sound films \"The Cat's Paw\" is the most controversial. Ezekiel Cobb's solution to ridding the city that elects him mayor is very extreme for the tastes of 2005. Or is it? When a movie is made dictates what it's politics are: \"The Cat's Paw\" is from 1934. That second year of the Roosevelt New Deal (itself rather controversial for heavier government involvement) movie audiences saw films like \"Gabriel Over the White House\" and \"The Phantom President\", where our leaders did extra-Constitutional actions to rid the nation of internal enemies (and to force disarmament around the globe). Even Cecil B. De Mille got into this act with \"This Day and Age\", where a bunch of teenagers use rats to force a gangster to confess his crimes.<br /><br />To us, the use of violence to force anyone (even a bunch of goons and boodlers like Alan Dinehart's gang) to confess is repellent. After all, the Supreme Court has protected us from confession under duress. What we forget is that the reforms we are thinking of did not occur until the Warren Court and the Burger Court made them. For example, although Mr. Justice Sutherland's opinion in the Powell (\"Scottsboro Boys\") Case of 1932 guaranteed every criminal defendant had a right to counsel, Gideon v. Wainwright did not extend this to ordering court paid counsel to defendants until 1962. The Miranda Case, with it's now well-known anti-self-incrimination warning is from 1963. Nothing like this were considered necessary in 1934.<br /><br />If you study other movies of the period up to 1954 (and even to 1960) tricks are used to get confessions - Kirk Douglas confesses his crimes in front of witnesses in \"I Walk Alone\" while Burt Lancaster holds a gun to him. When Lancaster leaves, Douglas sneers about confessing under duress, only to see the gun is unloaded. Suddenly he realizes that (legally - in 1948) he has confessed without duress. Hate to say it, to any civil libertarians reading this note, but what Cobb/Lloyd does to Dinehart and his pals in the conclusion of \"The Cat's Paw\" was not only legal, but would have led to their jail sentences in 1934. We may call it heavy handed, fascistic, or horrid, but it would have worked legally when it was thought up.",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.9976839583361831
+      },
+      {
+        "text": "My God. This movie was awful. I can't complain about it too much. I went to see it just to be grossed out. It did suffice, sort of. It's funny that the most disgusting part of the movie was in the very, very beginning where the woman is extremely vividly forced to give birth to a horribly mutated baby.<br /><br />I also think that it's funny that the most notable actor in the movie was the Hispanic soldier, who was a supporting actor in Next Friday. Everyone in the movie did a horrible acting job. It was some of the worst acting I've ever paid to see. <br /><br />I also expected that it would be much more gruesome than the first one. It wasn't. I expected it to be more gruesome because it's a sequel and horror movie sequels are usually much less successful than their predecessors. I expected it to be more gruesome since gore and violence usually sell a horror movie these days (Grudge 2, Saw 3, Jeepers Creepers 1 & 2, Dead Silence), but It actually wasn't nearly as gruesome as the first one, which was yet another disappointment. <br /><br />The mutants in the first one were kind of disturbing but the filmmakers were trying so hard in this one to make them creepy that they were absolutely hilarious.<br /><br />I also hated the entire concept of showing the clip of the female soldier's son on her camera-phone saying \"I love you, mommy\" FOUR TIMES. It was stupid to show it in the first place because they were just trying to make us feel worse for the vulnerable mother than the rest of the soldiers, and it was even more stupid to keep trying to make us feel even WORSE for her by showing it three more times for no reason. This movie was a joke.",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.9974726269859562
+      },
+      {
+        "text": "One of the best films I have seen in the past five years! The cast is universally spectacular in a tale of young love and bravado on the Lower East Side of New York City with the two leads being superstars in the making. Funny, charming, sad and inspiring, this is a totally refreshing take on urban youth that puts Larry Clark's often-nauseating shtick in the gutter where it belongs... although I have to admit that Bully was a cut above his normal fare. Raising Victor Vargas is one film you will kick yourself for missing... so don't miss it!",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.9967248007491439
+      },
+      {
+        "text": "Dear SciFi Channel: How have you been? How was your summer? I've been OK, but I feel like our relationship isn't the same anymore and we're growing apart. I don't understand why you don't love me anymore. I've just finished watching your SciFi Channel Original \"Skeleton Man\" and, once again, you've shown a blatant lack of respect for my feelings by KILLING OFF EVERY HOT GIRL IN THIS MOVIE!!! I mean, I understand that you're just in this for instant gratification. All you care about is producing a movie where people get sliced and diced by a homicidal Indian spirit/creature/legend/whatever. So you really don't have time to put some thought and effort into anything else -- like finding a costume for Skeleton Man that doesn't make him like the gay lover of Skeletor from \"He-Man.\" Seriously, his robe looks like a satin blanket sheet and his skull is smooth as a baby's behind, he almost looks like a killer Halloween-costume-for-a-6-year-old as he marches through the wilderness on a homicidal rampage. So we throw you a bone, because we're not looking for Oscar-winning performances, intriguing plot or realistic character reactions to the situations at hand. Because we realize that even though Michael Rooker, Caspar van Diem and all the girls are supposed to be trained Special Ops agents, they are all mysteriously transformed into Keystone Kops who can't shoot or see straight whenever Skeleton Man appears. And we also fully expect that nothing -- bullets, explosions, electrocution, nothing -- can kill Skeleton Man until there is one minute left in the movie and we need to find a way to tie things up neatly. We expect to see blood and guts. But you have a knack for taking the least attractive actress in the entire cast and making her the only female who survives. And quite honestly, I think you do it just to antagonize me. Because this movie, as silly as it is, has the potential to be a \"so-bad-it's-good\" classic and just killing off all the hotties ruins everything -- and forces me to lower its rating. All I ask is that once, just once, you take my feelings into account and let the sexiest girls survive the movie. Please.",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.9945231354952896
+      },
+      {
+        "text": "I was looking through the movie listings in my area on yahoo and seen a movie that had not been advertised. I looked closer and noticed that Peter Falk and Paul Reiser were in it. Having watched \"Mad about you\", once, I was not a fan of Paul Reiser. However, I am a big fan of Peter Falk. So the spouse and I took a chance. We were both swept into this story. The beautiful scenery, the heartfelt acting and the sense of family and moral values that are seldom seen in movies and the world today. Not that sappy emoted junk, but real life situations from real life-like people. I even have to say, Paul Reiser was excellent, although, I still won't watch \"Mad about you\". I don't know where this movie has gone. I heard it was put out in limited release. It should be shared with the world. It is one of the finest movies I have seen. M.",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.9428513294386515
+      },
+      {
+        "text": "The 1986 TV movie of The Spirit was a pilot for a possible series. However, Spirit creator Will Eisner did not like the film and thus no series was produced. I thought it was a very entertaining film and captured the spirit (sorry) of the comic with a modern twist. I'm sorry it didn't materialize into a series. Sam (Flash Gordon) Jones was a perfect Spirit. Nana Visitor was a nice Ellen Dolan and of course would later go on to Star Trek:Deep Space Nine years later. Maybe with the release of Frank Miller's big-screen version of The Spirit, more people will be able to see this rare gem of Spirit history. It seems that when Hollywood makes a film from an already established character or idea, someone will inevitably seek out previous versions of the property and release it to video in order to make a few dollars. When Antonio Banderas donned the mask of Zorro, we were able to get earlier versions of the masked hero on DVD, such as the great Alain Delon version of the 1970s (although all copies I ever saw were badly edited). Heres hoping someone will release the TV adventure of The Spirit to DVD soon.",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.9426337476896229
+      }
+    ],
+    "run_id": "1764435865540",
+    "timestamp": "2025-11-29T17:04:25.540720Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
+    "task_name": "sarcasm_kaggle",
+    "max_samples": 500,
+    "max_length": 64,
+    "best_layer": 2,
+    "best_f1": 0.82,
+    "best_acc": 0.82,
+    "layer_metrics": [
+      {
+        "layer_index": 0,
+        "accuracy": 0.75,
+        "f1_weighted": 0.75017586172244,
+        "ece": 0.12589472144030026
+      },
+      {
+        "layer_index": 1,
+        "accuracy": 0.78,
+        "f1_weighted": 0.780352564102564,
+        "ece": 0.09856652660562126
+      },
+      {
+        "layer_index": 2,
+        "accuracy": 0.82,
+        "f1_weighted": 0.82,
+        "ece": 0.09885646216529304
+      },
+      {
+        "layer_index": 3,
+        "accuracy": 0.77,
+        "f1_weighted": 0.7701617927846448,
+        "ece": 0.10893654287663626
+      },
+      {
+        "layer_index": 4,
+        "accuracy": 0.78,
+        "f1_weighted": 0.7795555555555554,
+        "ece": 0.09557129341782272
+      },
+      {
+        "layer_index": 5,
+        "accuracy": 0.82,
+        "f1_weighted": 0.8191233766233765,
+        "ece": 0.1268664095938703
+      },
+      {
+        "layer_index": 6,
+        "accuracy": 0.79,
+        "f1_weighted": 0.7898094565984475,
+        "ece": 0.10005215450728311
+      }
+    ],
+    "example_predictions": [],
+    "run_id": "1764434334978",
+    "timestamp": "2025-11-29T16:38:54.978045Z"
+  },
+  {
+    "model_name": "distilbert-base-uncased",
     "task_name": "sarcasm_kaggle",
     "max_samples": 500,
     "max_length": 64,

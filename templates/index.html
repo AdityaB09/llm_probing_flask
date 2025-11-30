@@ -1,89 +1,53 @@
 {% extends "base.html" %}
+{% block title %}LLM Probing Lab – Dashboard{% endblock %}
 {% block content %}
-<div class="row mb-4">
-  <div class="col-lg-7">
-    <h1 class="display-5 fw-bold text-title mb-2">
-      Layerwise Probing Dashboard
-    </h1>
-    <p class="lead text-subtle">
-      Explore how transformer layers encode <strong>structure</strong>,
-      <strong>emotion</strong>, and <strong>credibility</strong> across multiple NLP tasks.
-    </p>
-    <a href="{{ url_for('run_probe_view') }}"
-       class="btn btn-accent btn-lg shadow-glow mt-2">
-      ⚡ Start a New Probe
-    </a>
-  </div>
-</div>
+<section class="hero">
+  <h1>Layerwise Probing Dashboard</h1>
+  <p>
+    Explore how transformer layers encode <strong>structure</strong>,
+    <strong>emotion</strong>, and <strong>credibility</strong> across multiple NLP tasks.
+  </p>
+  <a href="{{ url_for('run_probe_view') }}" class="primary-btn">⚡ Start a New Probe</a>
+</section>
 
-<div class="row g-3 mb-4">
+<section class="cards-grid">
   {% for key, label in tasks.items() %}
-  <div class="col-xl-3 col-md-6">
-    <a href="{{ url_for('run_probe_view') }}?task={{ key }}"
-       class="task-card-link text-decoration-none">
-      <div class="card card-panel h-100">
-        <div class="card-body">
-          <h5 class="card-title text-panel">{{ label }}</h5>
-          <p class="card-text text-panel-subtle small mb-3">
-            {% if 'Sarcasm' in label %}
-              Affective task – ironic vs non-ironic headlines.
-            {% elif 'Fake' in label %}
-              Credibility – fake vs real news sources.
-            {% elif 'Amazon' in label %}
-              Product sentiment – positive vs negative fine food reviews.
-            {% elif 'Hate' in label %}
-              Social-safety – toxic vs benign content.
-            {% else %}
-              Structural – POS tag distribution over sentences.
-            {% endif %}
-          </p>
-          <span class="badge badge-chip">Task: {{ key }}</span>
-        </div>
-      </div>
-    </a>
-  </div>
+  <a class="task-card" href="{{ url_for('run_probe_view') }}?task={{ key }}">
+    <h3>{{ label }}</h3>
+    <p>{{ TASK_BLURBS.get(key, "") if TASK_BLURBS is defined else "" }}</p>
+    <span class="task-tag">Task: {{ key }}</span>
+  </a>
   {% endfor %}
-</div>
+</section>
 
-<div class="row g-4">
-  <div class="col-xl-8">
-    <h4 class="section-title mb-3">Recent Runs</h4>
+<section class="two-column">
+  <div class="card">
+    <h2>Recent Runs</h2>
     {% if recent_runs %}
-      <div class="list-group run-list">
-        {% for run in recent_runs %}
-        <a href="{{ url_for('run_detail', run_id=run.run_id) }}"
-           class="list-group-item list-group-item-action run-row">
-          <div class="d-flex justify-content-between flex-wrap gap-2">
-            <div>
-              <span class="run-model">{{ run.model_name }}</span>
-              <span class="text-muted">on</span>
-              <span class="run-task">{{ run.task_name }}</span>
-              <span class="badge badge-layer ms-2">{{ run.best_layer }}</span>
-            </div>
-            <div>
-              <span class="metric-pill metric-f1">F1 {{ "%.3f"|format(run.best_f1) }}</span>
-              <span class="metric-pill metric-acc ms-2">Acc {{ "%.3f"|format(run.best_acc) }}</span>
-            </div>
-          </div>
-          <small class="text-muted">{{ run.timestamp }}</small>
-        </a>
+      <ul class="run-list">
+        {% for r in recent_runs %}
+        <li>
+          <a href="{{ url_for('run_detail', run_id=r.run_id) }}">
+            <span class="run-model">{{ r.model_name }}</span>
+            on
+            <span class="run-task">{{ tasks.get(r.task_name, r.task_name) }}</span>
+            → best layer {{ r.best_layer }}
+            (F1={{ "%.3f"|format(r.best_f1) }})
+          </a>
+        </li>
         {% endfor %}
-      </div>
+      </ul>
     {% else %}
-      <p class="text-subtle">No runs yet — launch your first probe!</p>
+      <p>No runs yet. Launch your first probe!</p>
     {% endif %}
   </div>
-
-  <div class="col-xl-4">
-    <div class="card card-panel h-100">
-      <div class="card-body">
-        <h5 class="card-title text-panel mb-2">Live Activity</h5>
-        <p class="text-panel-subtle small">
-          Best F1 from your last few runs.
-        </p>
-        <canvas id="historySparkline" height="180"></canvas>
-      </div>
-    </div>
+  <div class="card">
+    <h2>Playground ideas</h2>
+    <ul class="idea-list">
+      <li>Compare <code>distilbert-base-uncased</code> vs <code>roberta-base</code> on sarcasm.</li>
+      <li>See which layer is most calibrated on hate speech detection.</li>
+      <li>Explore dataset statistics in the Dataset Explorer.</li>
+    </ul>
   </div>
-</div>
+</section>
 {% endblock %}

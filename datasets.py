@@ -1,7 +1,6 @@
-# datasets.py
 from __future__ import annotations
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 import pandas as pd
 import nltk
@@ -48,48 +47,74 @@ def load_fake_news_dataset(max_samples: int = 2000) -> TaskData:
     return texts.tolist(), df["label"].astype(int).tolist()
 
 
-# ---------- NEW Amazon Reviews: Fine Food (Score 1–2 vs 4–5) ----------
+# ---------- Amazon Reviews (binary sentiment) ----------
 
 def load_amazon_reviews_dataset(max_samples: int = 2000) -> TaskData:
     """
-    Kaggle dataset: snap/amazon-fine-food-reviews
+    Kaggle dataset: nabamitachakraborty/amazon-reviews.
 
-    File: Reviews.csv
-    Columns: 'Score' (1-5), 'Text' (review), 'Summary' etc.
-
-    We create a binary label:
-        0 = negative (Score <= 2)
-        1 = positive (Score >= 4)
-    Score == 3 is treated as neutral and dropped.
+    We try to infer the label/text columns and map sentiment to {0,1}.
     """
     task_dir = download_kaggle_dataset("amazon_reviews")
 
-    # Handle both direct and nested locations
-    candidates = list(task_dir.rglob("Reviews.csv"))
-    if not candidates:
-        raise RuntimeError("Reviews.csv not found in Amazon Fine Food dataset.")
+    csv_files = list(task_dir.rglob("*.csv"))
+    if not csv_files:
+        raise RuntimeError("No CSV files found in amazon reviews dataset.")
 
-    csv_path = candidates[0]
+    csv_path = csv_files[0]
     df = pd.read_csv(csv_path)
 
-    if "Score" not in df.columns or "Text" not in df.columns:
-        raise RuntimeError("Expected 'Score' and 'Text' columns in Reviews.csv.")
+    # Try to find label + text columns
+    label_col = None
+    for c in df.columns:
+        if c.lower().startswith("label"):
+            label_col = c
+            break
+    if label_col is None:
+        raise RuntimeError("Could not find a label column in amazon reviews CSV.")
 
-    # Drop neutral reviews
-    df = df[(df["Score"] <= 2) | (df["Score"] >= 4)]
+    text_col = None
+    candidates = ["text", "review", "sentence", "comment", "content", "body"]
+    lower_map = {c.lower(): c for c in df.columns}
+    for name in candidates:
+        if name in lower_map:
+            text_col = lower_map[name]
+            break
+    if text_col is None:
+        text_col = df.columns[1]
 
-    # Binary label
-    labels = (df["Score"] >= 4).astype(int)
+    labels_raw = df[label_col].astype(int)
+    labels = (labels_raw > labels_raw.min()).astype(int)
+    texts = df[text_col].astype(str)
 
-    texts = df["Text"].astype(str)
-    # prepend summary if present
-    if "Summary" in df.columns:
-        texts = df["Summary"].fillna("").astype(str) + " : " + texts
+    df_proc = pd.DataFrame({"text": texts, "label": labels})
+    df_proc = df_proc.sample(frac=1.0, random_state=42).head(max_samples)
 
-    df = pd.DataFrame({"text": texts, "label": labels})
+    return df_proc["text"].tolist(), df_proc["label"].astype(int).tolist()
+
+
+# ---------- IMDB Reviews (binary sentiment) ----------
+
+def load_imdb_reviews_dataset(max_samples: int = 2000) -> TaskData:
+    """
+    Kaggle dataset: lakshmi25npathi/imdb-dataset-of-50k-movie-reviews.
+    """
+    task_dir = download_kaggle_dataset("imdb_reviews")
+    csv_path = task_dir / "IMDB Dataset.csv"
+    if not csv_path.exists():
+        csv_files = list(task_dir.rglob("*.csv"))
+        if not csv_files:
+            raise RuntimeError("No CSV files found in IMDB dataset.")
+        csv_path = csv_files[0]
+
+    df = pd.read_csv(csv_path)
+    if "review" not in df.columns or "sentiment" not in df.columns:
+        raise RuntimeError("Expected 'review' and 'sentiment' columns in IMDB CSV.")
+
     df = df.sample(frac=1.0, random_state=42).head(max_samples)
-
-    return df["text"].tolist(), df["label"].astype(int).tolist()
+    texts = df["review"].astype(str).tolist()
+    labels = (df["sentiment"].str.lower() == "positive").astype(int).tolist()
+    return texts, labels
 
 
 # ---------- Hate Speech ----------
@@ -131,7 +156,7 @@ def load_pos_treebank_dataset(max_samples: int = 2000) -> TaskData:
     texts: List[str] = []
     labels: List[int] = []
 
-    tag_to_id = {}
+    tag_to_id: Dict[str, int] = {}
     for sent in tagged_sents:
         words = [w for (w, t) in sent]
         tags = [t for (w, t) in sent]
@@ -150,6 +175,7 @@ TASK_LOADERS = {
     "sarcasm_kaggle": load_sarcasm_dataset,
     "fake_news": load_fake_news_dataset,
     "amazon_reviews": load_amazon_reviews_dataset,
+    "imdb_reviews": load_imdb_reviews_dataset,
     "hate_speech": load_hate_speech_dataset,
     "pos_treebank": load_pos_treebank_dataset,
 }

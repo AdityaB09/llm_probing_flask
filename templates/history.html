@@ -1,40 +1,35 @@
 {% extends "base.html" %}
+{% block title %}Run History{% endblock %}
 {% block content %}
-<h2 class="text-title mb-3">Run History</h2>
-
-{% if history %}
-  <div class="table-responsive">
-    <table class="table table-dark table-striped align-middle small">
+<section class="card">
+  <h1>Run History</h1>
+  {% if history %}
+    <table class="history-table">
       <thead>
-      <tr>
-        <th>Timestamp (UTC)</th>
-        <th>Model</th>
-        <th>Task</th>
-        <th>Best Layer</th>
-        <th>Best F1</th>
-        <th>Best Acc</th>
-        <th>Max Samples</th>
-        <th>Max Length</th>
-      </tr>
+        <tr>
+          <th>Run ID</th>
+          <th>Time (UTC)</th>
+          <th>Model</th>
+          <th>Task</th>
+          <th>Best layer</th>
+          <th>Best F1</th>
+        </tr>
       </thead>
       <tbody>
-      {% for r in history %}
-      <tr class="history-row"
-          onclick="window.location='{{ url_for('run_detail', run_id=r.run_id) }}'">
-        <td>{{ r.timestamp }}</td>
-        <td>{{ r.model_name }}</td>
-        <td><code>{{ r.task_name }}</code></td>
-        <td>{{ r.best_layer }}</td>
-        <td>{{ "%.3f"|format(r.best_f1) }}</td>
-        <td>{{ "%.3f"|format(r.best_acc) }}</td>
-        <td>{{ r.max_samples }}</td>
-        <td>{{ r.max_length }}</td>
-      </tr>
-      {% endfor %}
+        {% for r in history %}
+        <tr>
+          <td><a href="{{ url_for('run_detail', run_id=r.run_id) }}">{{ r.run_id }}</a></td>
+          <td>{{ r.timestamp }}</td>
+          <td>{{ r.model_name }}</td>
+          <td>{{ tasks.get(r.task_name, r.task_name) }}</td>
+          <td>{{ r.best_layer }}</td>
+          <td>{{ "%.3f"|format(r.best_f1) }}</td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
-  </div>
-{% else %}
-  <p class="text-subtle">No history yet.</p>
-{% endif %}
+  {% else %}
+    <p>No runs yet.</p>
+  {% endif %}
+</section>
 {% endblock %}

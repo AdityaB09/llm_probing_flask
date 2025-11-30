@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dataset Explorer – {{ task_label }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Dataset Explorer</h1>
+  <form method="get" action="{{ url_for('explore_view') }}">
+    <label>
+      Task
+      <select name="task" onchange="this.form.submit()">
+        {% for key, label in tasks.items() %}
+        <option value="{{ key }}" {% if key == current_task %}selected{% endif %}>
+          {{ label }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+  </form>
+  <p>Inspect a few examples, label distribution, and review length histogram.</p>
+</section>
+
+<section class="two-column">
+  <div class="card">
+    <h2>Label distribution</h2>
+    <ul class="label-list">
+      {% for label_id, count in label_counts.items() %}
+      <li><strong>Label {{ label_id }}</strong>: {{ count }} examples</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Length histogram</h2>
+    <div class="chart-container">
+      <canvas id="lengthChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Sample examples</h2>
+  <ul class="sample-predictions">
+    {% for ex in examples %}
+    <li>
+      <div class="sample-text">“{{ ex.text }}”</div>
+      <div class="sample-meta">
+        <span>Label: {{ ex.label }}</span>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<script>
+  const lengthBins = {{ length_hist.bins | tojson }};
+  const lengthCounts = {{ length_hist.counts | tojson }};
+  window.addEventListener("load", () => {
+    initLengthHistogram(lengthBins, lengthCounts);
+  });
+</script>
+{% endblock %}

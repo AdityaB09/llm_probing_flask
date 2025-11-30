@@ -1,4 +1,3 @@
-# kaggle_utils.py
 import os
 from pathlib import Path
 from kaggle.api.kaggle_api_extended import KaggleApi
@@ -7,9 +6,9 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 KAGGLE_DATASETS = {
     "sarcasm_kaggle": "rmisra/news-headlines-dataset-for-sarcasm-detection",
     "fake_news": "clmentbisaillon/fake-and-real-news-dataset",
-    # switched to Fine Food Reviews for Amazon sentiment
-    "amazon_reviews": "snap/amazon-fine-food-reviews",
+    "amazon_reviews": "nabamitachakraborty/amazon-reviews",
     "hate_speech": "mrmorj/hate-speech-and-offensive-language-dataset",
+    "imdb_reviews": "lakshmi25npathi/imdb-dataset-of-50k-movie-reviews",
 }
 
 
@@ -20,9 +19,6 @@ def get_data_root() -> Path:
 
 
 def ensure_kaggle_auth():
-    """
-    Makes sure Kaggle is configured. Raises a helpful error if not.
-    """
     has_file = Path("~/.kaggle/kaggle.json").expanduser().exists()
     has_env = "KAGGLE_USERNAME" in os.environ and "KAGGLE_KEY" in os.environ
     if not (has_file or has_env):
@@ -33,9 +29,6 @@ def ensure_kaggle_auth():
 
 
 def download_kaggle_dataset(task_key: str) -> Path:
-    """
-    Download & unzip dataset for a known task key. Returns the local folder path.
-    """
     if task_key not in KAGGLE_DATASETS:
         raise ValueError(f"Unknown Kaggle task key: {task_key}")
 

@@ -1,155 +1,222 @@
-let loadingInterval = null;
+// static/js/app.js
 
-function showLoadingOverlay() {
-  const overlay = document.getElementById("loading-overlay");
-  const msgEl = document.getElementById("loading-message");
-  if (!overlay || !msgEl) return;
+function safeParseJSON(raw) {
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to parse JSON:", e, raw);
+    return null;
+  }
+}
 
-  overlay.classList.remove("d-none");
+/**
+ * Results charts for a single run
+ */
+function initResultsCharts(layerMetrics, canvasIdMetrics, canvasIdEce) {
+  if (!layerMetrics || !layerMetrics.length) return;
 
-  const messages = [
-    "1/5 Downloading / loading dataset…",
-    "2/5 Building train / test splits…",
-    "3/5 Extracting hidden states from each layer…",
-    "4/5 Training logistic probes layer by layer…",
-    "5/5 Computing accuracy, F1, and calibration error…",
-    "Rendering visualizations…",
-  ];
+  const metricsId = canvasIdMetrics || "metricsChart";
+  const eceId = canvasIdEce || "eceChart";
 
-  let idx = 0;
-  msgEl.textContent = messages[idx];
+  const metricsCanvas = document.getElementById(metricsId);
+  const eceCanvas = document.getElementById(eceId);
+  if (!metricsCanvas || !eceCanvas) return;
 
-  if (loadingInterval) clearInterval(loadingInterval);
-  loadingInterval = setInterval(() => {
-    idx += 1;
-    if (idx >= messages.length) {
-      clearInterval(loadingInterval);
-      loadingInterval = null;
-      idx = messages.length - 1;
-      return;
+  const labels = layerMetrics.map(m =>
+    typeof m.layer_index !== "undefined" ? m.layer_index : m.layer
+  );
+  const acc = layerMetrics.map(m => m.accuracy);
+  const f1 = layerMetrics.map(m => m.f1_weighted);
+  const ece = layerMetrics.map(m => m.ece);
+
+  if (metricsCanvas._chartInstance) metricsCanvas._chartInstance.destroy();
+  if (eceCanvas._chartInstance) eceCanvas._chartInstance.destroy();
+
+  metricsCanvas._chartInstance = new Chart(metricsCanvas.getContext("2d"), {
+    type: "line",
+    data: {
+      labels: labels.map(l => `Layer ${l}`),
+      datasets: [
+        { label: "Accuracy", data: acc, tension: 0.3, borderWidth: 2, pointRadius: 3 },
+        { label: "Weighted F1", data: f1, tension: 0.3, borderWidth: 2, pointRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      scales: {
+        y: {
+          min: 0.0,
+          max: 1.0,
+          ticks: { callback: v => v.toFixed(2) }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}`
+          }
+        },
+        legend: { labels: { color: "#e5e7eb" } }
+      }
     }
-    msgEl.textContent = messages[idx];
-  }, 2200);
+  });
+
+  eceCanvas._chartInstance = new Chart(eceCanvas.getContext("2d"), {
+    type: "bar",
+    data: {
+      labels: labels.map(l => `Layer ${l}`),
+      datasets: [{ label: "ECE", data: ece, borderWidth: 1 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0.0,
+          ticks: { callback: v => v.toFixed(2) }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: { label: ctx => `ECE: ${ctx.parsed.y.toFixed(3)}` }
+        },
+        legend: { labels: { color: "#e5e7eb" } }
+      }
+    }
+  });
 }
 
-// On navigation back (results loaded) ensure interval is cleared
-window.addEventListener("pageshow", () => {
-  if (loadingInterval) {
-    clearInterval(loadingInterval);
-    loadingInterval = null;
-  }
-});
+/**
+ * Radar chart for information flow
+ */
+function initRadarChart(radarData) {
+  if (!radarData || !radarData.labels || !radarData.labels.length) return;
+  const canvas = document.getElementById("radarChart");
+  if (!canvas) return;
 
-// History sparkline on index
+  if (canvas._chartInstance) canvas._chartInstance.destroy();
+
+  canvas._chartInstance = new Chart(canvas.getContext("2d"), {
+    type: "radar",
+    data: {
+      labels: radarData.labels,
+      datasets: [
+        {
+          label: "Information flow signature",
+          data: radarData.values,
+          borderWidth: 2,
+          pointRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          min: 0,
+          max: 1,
+          ticks: { display: false }
+        }
+      },
+      plugins: {
+        legend: { labels: { color: "#e5e7eb" } }
+      }
+    }
+  });
+}
+
+/**
+ * Comparison chart: overlay F1 curves from two models
+ */
+function initCompareChart(metricsA, metricsB, labelA, labelB) {
+  if (!metricsA || !metricsB) return;
+  const canvas = document.getElementById("compareChart");
+  if (!canvas) return;
+
+  const labels = metricsA.map(m =>
+    typeof m.layer_index !== "undefined" ? m.layer_index : m.layer
+  );
+  const f1A = metricsA.map(m => m.f1_weighted);
+  const f1B = metricsB.map(m => m.f1_weighted);
+
+  if (canvas._chartInstance) canvas._chartInstance.destroy();
+
+  canvas._chartInstance = new Chart(canvas.getContext("2d"), {
+    type: "line",
+    data: {
+      labels: labels.map(l => `Layer ${l}`),
+      datasets: [
+        {
+          label: labelA,
+          data: f1A,
+          tension: 0.3,
+          borderWidth: 2,
+          pointRadius: 3
+        },
+        {
+          label: labelB,
+          data: f1B,
+          tension: 0.3,
+          borderWidth: 2,
+          pointRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      scales: {
+        y: { min: 0, max: 1, ticks: { callback: v => v.toFixed(2) } }
+      },
+      plugins: {
+        legend: { labels: { color: "#e5e7eb" } }
+      }
+    }
+  });
+}
+
+/**
+ * Histogram for dataset explorer
+ */
+function initLengthHistogram(bins, counts) {
+  const canvas = document.getElementById("lengthChart");
+  if (!canvas || !bins || !counts) return;
+  if (canvas._chartInstance) canvas._chartInstance.destroy();
+
+  canvas._chartInstance = new Chart(canvas.getContext("2d"), {
+    type: "bar",
+    data: {
+      labels: bins,
+      datasets: [{ label: "Examples", data: counts, borderWidth: 1 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: "#e5e7eb" } }
+      }
+    }
+  });
+}
+
+// Loading overlay on run launch
 document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("historySparkline");
-  if (canvas) {
-    fetch("/api/history_summary")
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data || data.length === 0) return;
-        const labels = data.map((run) => run.task_name).reverse();
-        const f1s = data.map((run) => run.best_f1).reverse();
-        new Chart(canvas.getContext("2d"), {
-          type: "line",
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: "Best F1",
-                data: f1s,
-                tension: 0.4,
-              },
-            ],
-          },
-          options: {
-            plugins: {
-              legend: { display: false },
-            },
-            scales: {
-              x: { display: false },
-              y: { min: 0, max: 1 },
-          },
-        }});
-      })
-      .catch(() => {});
+  const runButton = document.querySelector("[data-run-button]");
+  const loadingOverlay = document.querySelector("[data-loading-overlay]");
+
+  if (runButton && loadingOverlay) {
+    runButton.addEventListener("click", () => {
+      loadingOverlay.classList.remove("hidden");
+    });
   }
 });
 
-// Results / run-detail charts
-function initResultsCharts(layerMetrics, canvasIdOverride) {
-  const layers = layerMetrics.map((m) => m.layer_index);
-  const acc = layerMetrics.map((m) => m.accuracy);
-  const f1 = layerMetrics.map((m) => m.f1_weighted);
-  const ece = layerMetrics.map((m) => m.ece);
-
-  const metricsCanvas =
-    document.getElementById(canvasIdOverride || "metricsChart");
-  const eceCanvas = document.getElementById("eceChart");
-
-  if (metricsCanvas) {
-    new Chart(metricsCanvas.getContext("2d"), {
-      type: "line",
-      data: {
-        labels: layers,
-        datasets: [
-          { label: "Accuracy", data: acc, tension: 0.3 },
-          { label: "F1 (weighted)", data: f1, tension: 0.3 },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            labels: { color: "#e5e7eb" },
-          },
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: "Layer Index",
-              color: "#cbd5f5",
-            },
-            ticks: { color: "#cbd5f5" },
-          },
-          y: {
-            min: 0,
-            max: 1,
-            ticks: { color: "#cbd5f5" },
-          },
-        },
-      },
-    });
-  }
-
-  if (eceCanvas) {
-    new Chart(eceCanvas.getContext("2d"), {
-      type: "bar",
-      data: {
-        labels: layers,
-        datasets: [{ label: "ECE", data: ece }],
-      },
-      options: {
-        plugins: {
-          legend: { labels: { color: "#e5e7eb" } },
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: "Layer Index",
-              color: "#cbd5f5",
-            },
-            ticks: { color: "#cbd5f5" },
-          },
-          y: {
-            min: 0,
-            max: Math.max(...ece.concat([0.1])),
-            ticks: { color: "#cbd5f5" },
-          },
-        },
-      },
-    });
-  }
-}
+// Expose APIs globally
+window.initResultsCharts = initResultsCharts;
+window.initRadarChart = initRadarChart;
+window.initCompareChart = initCompareChart;
+window.initLengthHistogram = initLengthHistogram;

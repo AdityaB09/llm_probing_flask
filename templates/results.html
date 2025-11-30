@@ -1,78 +1,78 @@
 {% extends "base.html" %}
+{% block title %}
+Results: {{ model_name }} on {{ task_label }}
+{% endblock %}
 {% block content %}
-<div class="row mb-3">
-  <div class="col">
-    <h2 class="text-title">
-      Results: {{ model_name }} on {{ task_label }}
-    </h2>
-    <p class="text-subtle">
+<div class="results-page">
+  <header class="results-header">
+    <h1>Results: {{ model_name }} on {{ task_label }}</h1>
+    <p class="results-meta">
       Samples: {{ result.num_samples }} · Layers: {{ result.num_layers }} · Classes: {{ result.num_classes }}
     </p>
-  </div>
+    <a class="secondary-btn" href="{{ url_for('run_detail', run_id=run_record.run_id) }}">
+      View in history
+    </a>
+  </header>
+
+  <section class="results-grid">
+    <div class="card">
+      <h2>Layerwise Accuracy &amp; F1</h2>
+      <div class="chart-container">
+        <canvas id="metricsChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Calibration Error (ECE)</h2>
+      <div class="chart-container">
+        <canvas id="eceChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Information Flow Radar</h2>
+      <div class="chart-container">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="results-bottom-grid">
+    <div class="card">
+      <h2>What did we learn?</h2>
+      <p class="summary-text">
+        {{ explanation|safe }}
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Sample predictions from best layer ({{ result.best_layer_index }})</h2>
+      {% if example_predictions %}
+        <ul class="sample-predictions">
+          {% for ex in example_predictions %}
+          <li>
+            <div class="sample-text">“{{ ex.text }}”</div>
+            <div class="sample-meta">
+              <span>True: {{ ex.gold }}</span>
+              <span>Pred: {{ ex.pred }}</span>
+              <span>Conf: {{ "%.3f"|format(ex.confidence) }}</span>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No sample predictions were stored for this run.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <script>
+    const layerMetrics = {{ result.layer_metrics | tojson }};
+    const radarData = {{ radar_data | tojson }};
+    window.addEventListener("load", () => {
+      initResultsCharts(layerMetrics);
+      initRadarChart(radarData);
+    });
+  </script>
 </div>
-
-<div class="row g-4">
-  <div class="col-md-6">
-    <div class="card card-panel">
-      <div class="card-body">
-        <h5 class="card-title text-panel">Layerwise Accuracy & F1</h5>
-        <canvas id="metricsChart" height="240"></canvas>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="card card-panel">
-      <div class="card-body">
-        <h5 class="card-title text-panel">Calibration Error (ECE)</h5>
-        <canvas id="eceChart" height="240"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row mt-4">
-  <div class="col">
-    <div class="card card-panel mb-3">
-      <div class="card-body">
-        <h5 class="card-title text-panel">What did we learn?</h5>
-        <p class="text-panel-subtle">
-          {{ explanation|safe }}
-        </p>
-      </div>
-    </div>
-
-    <div class="card card-panel">
-      <div class="card-body">
-        <h5 class="card-title text-panel">Layerwise Table</h5>
-        <div class="table-responsive">
-          <table class="table table-dark table-striped align-middle small mb-0">
-            <thead>
-            <tr>
-              <th>Layer</th>
-              <th>Accuracy</th>
-              <th>F1 (weighted)</th>
-              <th>ECE</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for m in result.layer_metrics %}
-            <tr>
-              <td>{{ m.layer_index }}</td>
-              <td>{{ "%.3f"|format(m.accuracy) }}</td>
-              <td>{{ "%.3f"|format(m.f1_weighted) }}</td>
-              <td>{{ "%.3f"|format(m.ece) }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  const layerMetrics = {{ result.layer_metrics|tojson }};
-  initResultsCharts(layerMetrics);
-</script>
 {% endblock %}

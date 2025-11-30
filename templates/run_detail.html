@@ -1,67 +1,46 @@
 {% extends "base.html" %}
+{% block title %}Run {{ run.run_id }}{% endblock %}
 {% block content %}
-<h2 class="text-title mb-2">
-  Probe Run Details
-</h2>
-<p class="text-subtle mb-3">
-  Model: <strong>{{ run.model_name }}</strong> ·
-  Task: <code>{{ run.task_name }}</code> ·
-  Timestamp (UTC): {{ run.timestamp }}
-</p>
+<section class="card">
+  <h1>Run {{ run.run_id }}</h1>
+  <p>
+    <strong>Model:</strong> {{ run.model_name }} ·
+    <strong>Task:</strong> {{ task_label }} ·
+    <strong>Timestamp:</strong> {{ run.timestamp }}
+  </p>
+  <p>
+    Max samples: {{ run.max_samples }},
+    Max seq len: {{ run.max_length }},
+    Best layer: {{ run.best_layer }},
+    Best F1: {{ "%.3f"|format(run.best_f1) }}
+  </p>
+  <p class="summary-text">{{ explanation|safe }}</p>
+  <p>
+    <a href="{{ url_for('download_report', run_id=run.run_id) }}" class="secondary-btn">
+      ⬇ Download Markdown report
+    </a>
+  </p>
+</section>
 
-<div class="row g-4 mb-4">
-  <div class="col-md-8">
-    <div class="card card-panel">
-      <div class="card-body">
-        <h5 class="card-title text-panel">Layerwise Metrics</h5>
-        {% if run.layer_metrics %}
-          <canvas id="detailMetricsChart" height="260"></canvas>
-        {% else %}
-          <p class="text-panel-subtle small">
-            This run was created before layer-wise metrics were stored.
-          </p>
-        {% endif %}
-      </div>
-    </div>
+<section class="card">
+  <h2>Information Flow Radar</h2>
+  <div class="chart-container">
+    <canvas id="radarChart"></canvas>
   </div>
-  <div class="col-md-4">
-    <div class="card card-panel h-100">
-      <div class="card-body">
-        <h5 class="card-title text-panel">Quick Summary</h5>
-        <p class="mb-1">
-          Best layer:
-          <span class="badge badge-layer">{{ run.best_layer }}</span>
-        </p>
-        <p class="mb-1">
-          F1:
-          <span class="metric-pill metric-f1">{{ "%.3f"|format(run.best_f1) }}</span>
-        </p>
-        <p class="mb-3">
-          Accuracy:
-          <span class="metric-pill metric-acc">{{ "%.3f"|format(run.best_acc) }}</span>
-        </p>
-        <p class="small text-panel-subtle mb-0">
-          Max samples: {{ run.max_samples }}<br>
-          Max seq length: {{ run.max_length }}
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
+</section>
 
-<div class="card card-panel mb-4">
-  <div class="card-body">
-    <h5 class="card-title text-panel">Interpretation</h5>
-    <p class="text-panel-subtle">
-      {{ explanation|safe }}
-    </p>
-  </div>
-</div>
+<section class="card">
+  <h2>Your notes</h2>
+  <form method="post" action="{{ url_for('add_note', run_id=run.run_id) }}">
+    <textarea name="note" rows="4" placeholder="Add your interpretation or caveats here...">{{ run.note or "" }}</textarea>
+    <button type="submit" class="primary-btn">Save note</button>
+  </form>
+</section>
 
-{% if run.layer_metrics %}
 <script>
-  const lm = {{ run.layer_metrics|tojson }};
-  initResultsCharts(lm, "detailMetricsChart");
+  const radarData = {{ radar_data | tojson }};
+  window.addEventListener("load", () => {
+    initRadarChart(radarData);
+  });
 </script>
-{% endif %}
 {% endblock %}
